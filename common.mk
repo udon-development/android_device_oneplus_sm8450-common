@@ -228,7 +228,6 @@ PRODUCT_PACKAGES += \
 # Init
 PRODUCT_PACKAGES += \
     fstab.default \
-    fstab.default.vendor_ramdisk \
     init.class_main.sh \
     init.oplus.hw.rc \
     init.oplus.hw.rc.recovery \
@@ -243,6 +242,9 @@ PRODUCT_PACKAGES += \
     init.target.rc \
     ueventd.oplus.rc \
     ueventd.qcom.rc
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/init/fstab.default:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/first_stage_ramdisk/fstab.default
 
 # Keymaster
 PRODUCT_PACKAGES += \
