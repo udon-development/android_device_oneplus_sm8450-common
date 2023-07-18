@@ -99,6 +99,21 @@ ODM_MANIFEST_FILES += $(COMMON_PATH)/manifest_lineage.xml
 TARGET_INIT_VENDOR_LIB := //$(COMMON_PATH):libinit_oplus
 
 # Kernel
+# is-board-platform-in-list is used in split files below
+# from https://git.codelinaro.org/clo/la/platform/vendor/qcom-opensource/core-utils/-/blob/LA.QSSI.12.0.r1-08700.03-qssi.0/build/utils.mk
+include $(COMMON_PATH)/build/utils.mk
+
+include $(COMMON_PATH)/kernel/kernel-platform-board.mk
+include vendor/qcom/opensource/audio-kernel/audio_kernel_vendor_board.mk
+include vendor/qcom/opensource/camera-kernel/board.mk
+include vendor/qcom/opensource/dataipa/dataipa_dlkm_vendor_board.mk
+include vendor/qcom/opensource/datarmnet-ext/datarmnet_ext_dlkm_vendor_board.mk
+include vendor/qcom/opensource/datarmnet/datarmnet_dlkm_vendor_board.mk
+include vendor/qcom/opensource/display-drivers/display_driver_board.mk
+include vendor/qcom/opensource/eva-kernel/eva_kernel_board.mk
+include vendor/qcom/opensource/mmrm-driver/mmrm_kernel_board.mk
+include vendor/qcom/opensource/video-driver/video_kernel_board.mk
+
 BOARD_BOOT_HEADER_VERSION := 4
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_BOOTCONFIG := \
@@ -110,27 +125,13 @@ BOARD_KERNEL_CMDLINE := \
     video=vfb:640x400,bpp=32,memsize=3072000 \
     msm_geni_serial.con_enabled=0
 
-BOARD_KERNEL_IMAGE_NAME := Image
 BOARD_KERNEL_PAGESIZE := 4096
-BOARD_KERNEL_SEPARATED_DTBO := true
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 BOARD_RAMDISK_USE_LZ4 := true
 BOARD_USES_GENERIC_KERNEL_IMAGE := true
-TARGET_KERNEL_SOURCE := kernel/oneplus/sm8450
-TARGET_KERNEL_CONFIG := gki_defconfig vendor/waipio_GKI.config
-TARGET_KERNEL_NO_GCC := true
-
-# Kernel modules
-BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(COMMON_PATH)/vendor_dlkm.modules.load))
-BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(COMMON_PATH)/modules.blocklist
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(COMMON_PATH)/vendor_boot.modules.load))
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES_BLOCKLIST_FILE := $(BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE)
-BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(COMMON_PATH)/vendor_boot.modules.load.recovery))
-BOOT_KERNEL_MODULES := $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD)
 
 # Platform
 BOARD_USES_QCOM_HARDWARE := true
-TARGET_BOARD_PLATFORM := taro
 
 # Metadata
 BOARD_USES_METADATA_PARTITION := true
@@ -229,19 +230,30 @@ BOARD_AVB_VENDOR_BOOT_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
 BOARD_AVB_VENDOR_BOOT_ROLLBACK_INDEX_LOCATION := 6
 
 # WiFi
+BOARD_HAS_QCOM_WLAN := true
 BOARD_WLAN_DEVICE := qcwcn
 BOARD_HOSTAPD_DRIVER := NL80211
+BOARD_HOSTAPD_PRIVATE_LIB_EVENT := "ON"
 BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
 BOARD_WPA_SUPPLICANT_DRIVER := $(BOARD_HOSTAPD_DRIVER)
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := $(BOARD_HOSTAPD_PRIVATE_LIB)
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB_EVENT := "ON"
 CONFIG_IEEE80211AX := true
+PRODUCT_VENDOR_MOVE_ENABLED := true
+QC_WIFI_HIDL_FEATURE_DUAL_AP := true
+QC_WIFI_HIDL_FEATURE_DUAL_STA := true
+WIFI_DRIVER_BUILT := qca_cld3
+WIFI_DRIVER_DEFAULT := qca_cld3
 WIFI_DRIVER_STATE_CTRL_PARAM := "/dev/wlan"
 WIFI_DRIVER_STATE_OFF := "OFF"
 WIFI_DRIVER_STATE_ON := "ON"
+WIFI_HIDL_FEATURE_AWARE := true
 WIFI_HIDL_FEATURE_DUAL_INTERFACE := true
 WIFI_HIDL_UNIFIED_SUPPLICANT_SERVICE_RC_ENTRY := true
 WPA_SUPPLICANT_VERSION := VER_0_8_X
+
+WIFI_DRIVER_INSTALL_TO_KERNEL_OUT := true
+BOARD_VENDOR_KERNEL_MODULES += $(KERNEL_MODULES_OUT)/qca_cld3_qca6490.ko
 
 # Include the proprietary files BoardConfig.
 include vendor/oneplus/sm8450-common/BoardConfigVendor.mk
