@@ -3,6 +3,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
+TARGET_DISABLE_EPPE := true
 
 # A/B
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/launch_with_vendor_ramdisk.mk)
@@ -241,6 +242,21 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/init/fstab.default:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/first_stage_ramdisk/fstab.default
 
+# Kernel
+TARGET_BOARD_PLATFORM := taro
+
+$(call inherit-product, $(LOCAL_PATH)/kernel/kernel-platform-product.mk)
+$(call inherit-product, vendor/qcom/opensource/audio-kernel/audio_kernel_product_board.mk)
+$(call inherit-product, vendor/qcom/opensource/camera-kernel/config/waipio.mk)
+$(call inherit-product, vendor/qcom/opensource/camera-kernel/product.mk)
+$(call inherit-product, vendor/qcom/opensource/dataipa/dataipa_dlkm_vendor_product.mk)
+$(call inherit-product, vendor/qcom/opensource/datarmnet-ext/datarmnet_ext_dlkm_vendor_product.mk)
+$(call inherit-product, vendor/qcom/opensource/datarmnet/datarmnet_dlkm_vendor_product.mk)
+$(call inherit-product, vendor/qcom/opensource/display-drivers/display_driver_product.mk)
+$(call inherit-product, vendor/qcom/opensource/eva-kernel/eva_kernel_product.mk)
+$(call inherit-product, vendor/qcom/opensource/mmrm-driver/mmrm_kernel_board.mk)
+$(call inherit-product, vendor/qcom/opensource/video-driver/video_kernel_board.mk)
+
 # Keymaster
 PRODUCT_PACKAGES += \
     android.hardware.keymaster@4.1.vendor \
@@ -474,6 +490,19 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.wifi.rtt.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.rtt.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml \
     frameworks/native/data/etc/android.software.ipsec_tunnels.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.ipsec_tunnels.xml
+
+TARGET_WLAN_CHIP := qca6490
+
+WLAN_CHIPSET := qca_cld3
+
+# Force chip-specific DLKM name
+TARGET_MULTI_WLAN := true
+
+#WPA
+WPA := wpa_cli
+
+# Package chip specific ko files if TARGET_WLAN_CHIP is defined.
+PRODUCT_PACKAGES += qca_cld3_qca6490.ko
 
 # WiFi Display
 PRODUCT_PACKAGES += \
