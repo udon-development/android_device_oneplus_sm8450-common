@@ -49,6 +49,7 @@ on boot
 
     # Sensors
     chown system system /sys/devices/platform/soc/soc:sensor_fb/adsp_notify
+    chmod 0666 /dev/oplus_consumer_ir
 
     # TOF
     chown cameraserver cameraserver /sys/kernel/tof_control/app0/alg_setting
